@@ -1,7 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { Flex, Select } from 'antd';
 import { SearchBar } from '@/components/common';
-import './CatalogToolbar.css';
 
 interface FilterOption {
   label: string;
@@ -57,7 +56,6 @@ export const CatalogToolbar = ({
           value={availabilityValue}
         />
       </Flex>
-
-      </Flex>
+    </Flex>
   );
 };

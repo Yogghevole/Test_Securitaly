@@ -13,6 +13,7 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/clienti', [ClienteController::class, 'index']);
 Route::get('/clienti/{id}', [ClienteController::class, 'show']);
 Route::post('/clienti', [ClienteController::class, 'store']);
+Route::put('/clienti/{id}', [ClienteController::class, 'update']);
 
 // Rotte DVD
 Route::get('/dvds', [DvdController::class, 'index']);

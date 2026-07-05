@@ -3,11 +3,10 @@
 import { ClockCircleOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
 import { DatePicker, Drawer, Select, Typography } from 'antd';
+import { DvdCover, MediaListItem } from '@/components/common';
 import { DrawerFooter } from '@/components/form';
 import type { Cliente, Dvd } from '@/types';
 import { formatDuration } from '@/utils/formatDuration';
-import { DvdCover } from './DvdCover';
-import './RentalDrawer.css';
 
 interface RentalDrawerProps {
   customers: Cliente[];
@@ -122,27 +121,29 @@ export const RentalDrawer = ({
           <div className="rental-drawer__selected-list">
             {selectedDvds.map((dvd) => (
               <div className="rental-drawer__selected-item-card" key={dvd.id}>
-                <DvdCover coverPath={dvd.cover_path} title={dvd.titolo} />
-
-                <div className="rental-drawer__selected-item-content">
-                  <Typography.Text className="rental-drawer__selected-item-title">
-                    {dvd.titolo}
-                  </Typography.Text>
-
-                  <Typography.Text
-                    className="rental-drawer__selected-item-meta"
-                    type="secondary"
-                  >
-                    {dvd.categoria}
-                  </Typography.Text>
-
+                <MediaListItem
+                  cover={<DvdCover coverPath={dvd.cover_path} title={dvd.titolo} />}
+                  subtitle={
+                    <Typography.Text
+                      className="rental-drawer__selected-item-meta"
+                      type="secondary"
+                    >
+                      {dvd.categoria}
+                    </Typography.Text>
+                  }
+                  title={
+                    <Typography.Text className="rental-drawer__selected-item-title">
+                      {dvd.titolo}
+                    </Typography.Text>
+                  }
+                >
                   <Typography.Text
                     className="rental-drawer__selected-item-meta rental-drawer__selected-item-duration"
                     type="secondary"
                   >
                     <ClockCircleOutlined /> {formatDuration(dvd.durata_minuti)}
                   </Typography.Text>
-                </div>
+                </MediaListItem>
               </div>
             ))}
           </div>

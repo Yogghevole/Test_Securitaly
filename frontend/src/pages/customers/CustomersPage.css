@@ -1,0 +1,160 @@
+.customers-page__container-shell {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+}
+
+.customers-page__surface {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  padding: 20px 20px 8px;
+}
+
+.customers-page__toolbar {
+  width: 100%;
+}
+
+.customers-page__search {
+  width: 360px;
+}
+
+.customers-page__divider.ant-divider {
+  margin: 18px -20px 16px;
+}
+
+.customers-page__surface-content {
+  min-width: 0;
+}
+
+.customers-page__table .ant-table-thead > tr > th,
+.customers-page__table .ant-table-tbody > tr > td {
+  padding-block: 12px;
+}
+
+.customers-page__table-row {
+  cursor: pointer;
+}
+
+.customers-page__avatar,
+.customers-page__drawer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #e6f4ff;
+  color: #1677ff;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.customers-page__drawer .ant-drawer-header {
+  padding: 18px 24px;
+}
+
+.customers-page__drawer .ant-drawer-title {
+  color: #262626;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.customers-page__drawer .ant-drawer-body {
+  padding-top: 20px;
+}
+
+.customers-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.customers-page__drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.customers-page__drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.customers-page__drawer-avatar {
+  width: 56px;
+  height: 56px;
+  font-size: 18px;
+}
+
+.customers-page__drawer-customer {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.customers-page__drawer-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.customers-page__drawer-name.ant-typography {
+  margin: 0;
+}
+
+.customers-page__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.customers-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.customers-page__section-title.ant-typography {
+  margin: 0;
+  color: #262626;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.customers-page__rental-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.customers-page__rental-card {
+  padding: 12px;
+  border: 1px solid rgba(5, 5, 5, 0.08);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.customers-page__rental-title.ant-typography {
+  margin: 0;
+  color: #262626;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .customers-page__search {
+    width: 100%;
+  }
+
+  .customers-page__stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

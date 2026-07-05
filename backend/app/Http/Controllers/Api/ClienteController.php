@@ -9,9 +9,28 @@ use Illuminate\Http\Request;
 class ClienteController extends Controller
 {
     // Elenca tutti i clienti
-    public function index()
+    public function index(Request $request)
     {
-        $clienti = Cliente::all();
+        $search = trim((string) $request->query('search', ''));
+
+        $clienti = Cliente::query()
+            ->withCount([
+                'noleggi as active_rentals' => function ($query) {
+                    $query->whereNull('restituzione_effettiva');
+                },
+            ])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($nestedQuery) use ($search) {
+                    $nestedQuery
+                        ->where('nome', 'like', '%' . $search . '%')
+                        ->orWhere('cognome', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('cognome')
+            ->orderBy('nome')
+            ->get();
+
         return response()->json($clienti);
     }
 
@@ -31,6 +50,7 @@ class ClienteController extends Controller
         $rentalHistory = $cliente
             ->noleggi()
             ->with(['cliente', 'dvd'])
+            ->whereNotNull('restituzione_effettiva')
             ->orderByDesc('data_noleggio')
             ->get()
             ->append('is_attivo');
@@ -57,5 +77,21 @@ class ClienteController extends Controller
 
         // Restituisce il cliente creato con codice 201 (Created)
         return response()->json($cliente, 201);
+    }
+
+    // Aggiorna un cliente esistente
+    public function update(Request $request, int $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'cognome' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clienti,email,' . $cliente->id,
+        ]);
+
+        $cliente->update($validated);
+
+        return response()->json($cliente);
     }
 }

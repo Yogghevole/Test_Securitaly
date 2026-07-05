@@ -2,11 +2,11 @@ import { ClockCircleOutlined } from '@ant-design/icons';
 import { useMemo } from 'react';
 import { Tag } from 'antd';
 import type { TableProps } from 'antd';
+import { DvdCover, StatusChip } from '@/components/common';
 import { AppTable } from '@/components/table';
 import type { Dvd } from '@/types';
 import { formatDuration } from '@/utils/formatDuration';
-import { DvdCover } from './DvdCover';
-import './CatalogTable.css';
+import { getAvailabilityStatus } from '@/utils/getAvailabilityStatus';
 
 interface CatalogTableProps {
   dvds: Dvd[];
@@ -16,26 +16,12 @@ interface CatalogTableProps {
   selectedDvdIds: number[];
 }
 
-const getAvailabilityTagConfig = (dvd: Dvd) => {
-  const available = dvd.copie_disponibili;
-  const total = dvd.quantita;
-  const ratio = total > 0 ? available / total : 0;
-
-  if (available === 0) {
-    return { color: 'error' as const, label: `0 / ${total} disponibili` };
-  }
-
-  if (ratio <= 0.5) {
-    return { color: 'warning' as const, label: `${available} / ${total} disponibili` };
-  }
-
-  return { color: 'success' as const, label: `${available} / ${total} disponibili` };
-};
+const COVER_COLUMN_WIDTH = 88;
 
 const getCatalogColumns = (
   hasOpenCart: boolean,
 ): TableProps<Dvd>['columns'] => {
-  const coverColumnWidth = hasOpenCart ? 104 : 88;
+  const coverColumnWidth = COVER_COLUMN_WIDTH;
   const titleColumnWidth = hasOpenCart ? 220 : 236;
 
   return [
@@ -83,9 +69,11 @@ const getCatalogColumns = (
       key: 'copie_disponibili',
       width: 164,
       render: (_: number, record: Dvd) => {
-        const tagConfig = getAvailabilityTagConfig(record);
+        const chip = getAvailabilityStatus(record);
 
-        return <Tag color={tagConfig.color} className="catalog-table__availability-tag">{tagConfig.label}</Tag>;
+        return (
+          <StatusChip variant={chip.variant}>{chip.label}</StatusChip>
+        );
       },
     },
   ];

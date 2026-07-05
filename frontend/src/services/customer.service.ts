@@ -1,18 +1,29 @@
 import apiClient from '@/lib/axios';
-import type { Cliente, CreateCustomerPayload } from '@/types';
+import type {
+  Cliente,
+  CreateCustomerPayload,
+  CustomerDetailResponse,
+  UpdateCustomerPayload,
+} from '@/types';
 
 const CUSTOMERS_ENDPOINT = '/clienti';
 
-const getAll = async (): Promise<Cliente[]> => {
-  const { data } = await apiClient.get<Cliente[]>(CUSTOMERS_ENDPOINT);
+interface CustomerFilters {
+  search?: string;
+}
+
+const getAll = async (params?: CustomerFilters): Promise<Cliente[]> => {
+  const { data } = await apiClient.get<Cliente[]>(CUSTOMERS_ENDPOINT, { params });
 
   return data;
 };
 
-const getById = async (id: number): Promise<Cliente | null> => {
-  const customers = await getAll();
+const getById = async (id: number): Promise<CustomerDetailResponse> => {
+  const { data } = await apiClient.get<CustomerDetailResponse>(
+    `${CUSTOMERS_ENDPOINT}/${id}`,
+  );
 
-  return customers.find((customer) => customer.id === id) ?? null;
+  return data;
 };
 
 const create = async (payload: CreateCustomerPayload): Promise<Cliente> => {
@@ -21,8 +32,21 @@ const create = async (payload: CreateCustomerPayload): Promise<Cliente> => {
   return data;
 };
 
+const update = async (
+  id: number,
+  payload: UpdateCustomerPayload,
+): Promise<Cliente> => {
+  const { data } = await apiClient.put<Cliente>(
+    `${CUSTOMERS_ENDPOINT}/${id}`,
+    payload,
+  );
+
+  return data;
+};
+
 export const customerService = {
   getAll,
   getById,
   create,
+  update,
 };

@@ -1,5 +1,3 @@
-/* src/pages/catalogo/components/DvdCover.tsx */
-
 import { useState } from 'react';
 import { getCoverUrl } from '@/utils/getCoverUrl';
 import './DvdCover.css';

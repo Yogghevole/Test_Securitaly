@@ -2,10 +2,9 @@
 
 import { ClockCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { Badge, Button, Divider, Typography } from 'antd';
+import { DvdCover, MediaListItem } from '@/components/common';
 import type { Dvd } from '@/types';
 import { formatDuration } from '@/utils/formatDuration';
-import { DvdCover } from './DvdCover';
-import './RentalCart.css';
 
 interface RentalCartProps {
   dvds: Dvd[];
@@ -32,37 +31,39 @@ export const RentalCart = ({ dvds, onContinue, onRemove }: RentalCartProps) => {
 
       <div className="rental-cart__list">
         {dvds.map((dvd) => (
-          <div className="rental-cart__item" key={dvd.id}>
-            <DvdCover coverPath={dvd.cover_path} title={dvd.titolo} />
-
-            <div className="rental-cart__item-content">
-              <Typography.Text className="rental-cart__item-title">
-                {dvd.titolo}
-              </Typography.Text>
-
+          <MediaListItem
+            cover={<DvdCover coverPath={dvd.cover_path} title={dvd.titolo} />}
+            key={dvd.id}
+            right={
+              <Button
+                aria-label={`Rimuovi ${dvd.titolo} dal carrello`}
+                className="rental-cart__item-remove"
+                icon={<CloseOutlined />}
+                onClick={() => onRemove(dvd.id)}
+                type="text"
+              />
+            }
+            subtitle={
               <Typography.Text
                 className="rental-cart__item-category"
                 type="secondary"
               >
                 {dvd.categoria}
               </Typography.Text>
-
-              <Typography.Text
-                className="rental-cart__item-duration"
-                type="secondary"
-              >
-                <ClockCircleOutlined /> {formatDuration(dvd.durata_minuti)}
+            }
+            title={
+              <Typography.Text className="rental-cart__item-title">
+                {dvd.titolo}
               </Typography.Text>
-            </div>
-
-            <Button
-              aria-label={`Rimuovi ${dvd.titolo} dal carrello`}
-              className="rental-cart__item-remove"
-              icon={<CloseOutlined />}
-              onClick={() => onRemove(dvd.id)}
-              type="text"
-            />
-          </div>
+            }
+          >
+            <Typography.Text
+              className="rental-cart__item-duration"
+              type="secondary"
+            >
+              <ClockCircleOutlined /> {formatDuration(dvd.durata_minuti)}
+            </Typography.Text>
+          </MediaListItem>
         ))}
       </div>
 
