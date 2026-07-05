@@ -1,0 +1,19 @@
+/* src/pages/catalogo/components/CatalogToolbar.css */
+
+.catalog-toolbar {
+  width: 100%;
+}
+
+.catalog-toolbar__filters {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.catalog-toolbar__search {
+  width: 320px;
+}
+
+.catalog-toolbar__category,
+.catalog-toolbar__availability {
+  width: 220px;
+}

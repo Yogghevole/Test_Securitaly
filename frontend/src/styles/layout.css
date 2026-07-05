@@ -1,0 +1,391 @@
+.layout-root {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout-shell {
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout-sidebar {
+  height: 100vh;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #001529;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    width 0.2s ease,
+    min-width 0.2s ease,
+    max-width 0.2s ease,
+    flex-basis 0.2s ease;
+}
+
+.layout-sidebar .ant-layout-sider-children {
+  height: 100%;
+}
+
+.layout-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.layout-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0.625rem 0.125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.layout-sidebar-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+
+.layout-sidebar-brand-switcher {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.125rem;
+  height: 4.375rem;
+  flex-shrink: 0;
+}
+
+.layout-sidebar-logo,
+.layout-sidebar-expand-button {
+  grid-area: 1 / 1;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.layout-sidebar-logo {
+  width: 4.25rem;
+  height: 4.25rem;
+  object-fit: contain;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.layout-sidebar-expand-button,
+.layout-sidebar-collapse-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: 0.875rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.layout-sidebar-expand-button .anticon,
+.layout-sidebar-collapse-button .anticon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.layout-sidebar-expand-button {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
+}
+
+.layout-sidebar-expand-button:hover,
+.layout-sidebar-collapse-button:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.layout-sidebar-expand-button:focus-visible,
+.layout-sidebar-collapse-button:focus-visible {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.layout-sidebar-title.ant-typography {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  margin-inline-start: -0.25rem;
+  color: #fff;
+  min-height: 3.875rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    max-width 0.18s ease;
+  max-width: 10rem;
+}
+
+.layout-sidebar-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    width 0.18s ease;
+}
+
+.layout-sidebar-collapse-button {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.layout-sidebar-menu {
+  flex: 1;
+  padding-top: 0.75rem;
+  padding-inline: 0.5rem;
+  min-height: 0;
+}
+
+.layout-sidebar-menu .ant-menu {
+  width: 100%;
+  border-inline-end: none;
+  background: transparent;
+}
+
+.layout-sidebar-menu .ant-menu-item,
+.layout-sidebar-menu .ant-menu-submenu-title {
+  width: 100%;
+}
+
+.layout-sidebar-footer {
+  margin-top: auto;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.layout-sidebar-footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.layout-sidebar-footer-stack.ant-typography,
+.layout-sidebar-footer-version.ant-typography,
+.layout-sidebar-footer-status-text.ant-typography {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.layout-sidebar-footer-stack.ant-typography,
+.layout-sidebar-footer-version.ant-typography {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.layout-sidebar-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+}
+
+.layout-sidebar-footer-status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #52c41a;
+  box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.16);
+  flex-shrink: 0;
+}
+
+.layout-sidebar-footer-status-text.ant-typography {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-header {
+  gap: 0;
+  justify-content: center;
+  padding-inline: 0;
+  padding-block: 0.125rem 0;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-brand {
+  gap: 0;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-brand-switcher {
+  width: 4rem;
+  height: 4rem;
+  margin-inline: auto;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-logo {
+  width: 4rem;
+  height: 4rem;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-title.ant-typography {
+  opacity: 0;
+  transform: translateX(-0.5rem);
+  max-width: 0;
+  overflow: hidden;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-header-actions {
+  width: 0;
+  opacity: 0;
+  transform: scale(0.92);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu {
+  padding-top: 0.75rem;
+  padding-inline: 0.5rem;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-inline-collapsed {
+  width: 100%;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-item,
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-submenu-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0 !important;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-item .ant-menu-item-icon,
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-submenu-title .ant-menu-item-icon,
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-menu .ant-menu-submenu-title .anticon {
+  margin-inline-end: 0;
+  font-size: 1.125rem;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer {
+  padding-inline: 0;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer-content {
+  align-items: center;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer-stack.ant-typography,
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer-version.ant-typography,
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer-status-text.ant-typography {
+  display: none;
+}
+
+.layout-sidebar.layout-sidebar-collapsed .layout-sidebar-footer-status {
+  justify-content: center;
+  margin-top: 0;
+}
+
+.layout-sidebar.layout-sidebar-collapsed:not(.layout-sidebar-hovered) .layout-sidebar-logo {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.layout-sidebar.layout-sidebar-collapsed:not(.layout-sidebar-hovered) .layout-sidebar-expand-button {
+  opacity: 0;
+  transform: scale(0.92);
+  pointer-events: none;
+}
+
+.layout-sidebar.layout-sidebar-collapsed.layout-sidebar-hovered .layout-sidebar-logo {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+.layout-sidebar.layout-sidebar-collapsed.layout-sidebar-hovered .layout-sidebar-expand-button {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  background: #fff;
+  padding-inline: 1.5rem;
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+}
+
+.layout-header-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.layout-header-context {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.layout-header-title.ant-typography {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.layout-header-breadcrumb {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.layout-header-breadcrumb .ant-breadcrumb-link {
+  color: inherit;
+}
+
+.layout-header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.layout-header-user-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem;
+}
+
+.layout-header-user-name.ant-typography {
+  margin: 0;
+  color: #262626;
+  font-weight: 600;
+}
+
+.layout-header-user-role.ant-typography {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+
+.layout-content {
+  min-height: 0;
+  overflow: auto;
+  padding: 1.5rem;
+  background: #f5f5f5;
+}

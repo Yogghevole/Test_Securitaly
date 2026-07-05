@@ -15,6 +15,7 @@ class Dvd extends Model
         'categoria',
         'durata_minuti',
         'quantita',
+        'cover_path',
     ];
 
     // Relazione: un DVD ha molti noleggi

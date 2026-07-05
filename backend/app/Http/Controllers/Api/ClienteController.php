@@ -15,6 +15,33 @@ class ClienteController extends Controller
         return response()->json($clienti);
     }
 
+    // Restituisce il dettaglio di un cliente con noleggi attivi e storico
+    public function show(int $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $activeRentals = $cliente
+            ->noleggi()
+            ->with(['cliente', 'dvd'])
+            ->whereNull('restituzione_effettiva')
+            ->orderByDesc('data_noleggio')
+            ->get()
+            ->append('is_attivo');
+
+        $rentalHistory = $cliente
+            ->noleggi()
+            ->with(['cliente', 'dvd'])
+            ->orderByDesc('data_noleggio')
+            ->get()
+            ->append('is_attivo');
+
+        return response()->json([
+            'cliente' => $cliente,
+            'active_rentals' => $activeRentals,
+            'rental_history' => $rentalHistory,
+        ]);
+    }
+
     // Crea un nuovo cliente
     public function store(Request $request)
     {
