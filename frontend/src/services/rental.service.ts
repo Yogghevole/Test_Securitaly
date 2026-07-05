@@ -1,5 +1,10 @@
 import apiClient from '@/lib/axios';
-import type { CreateRentalPayload, Noleggio, RentalFilters } from '@/types';
+import type {
+  CreateRentalPayload,
+  Noleggio,
+  RegisterReturnsPayload,
+  RentalFilters,
+} from '@/types';
 
 const RENTALS_ENDPOINT = '/noleggi';
 
@@ -33,10 +38,22 @@ const registerReturn = async (id: number): Promise<Noleggio> => {
   return data;
 };
 
+const registerReturns = async (
+  payload: RegisterReturnsPayload,
+): Promise<Noleggio[]> => {
+  const { data } = await apiClient.post<Noleggio[]>(
+    `${RENTALS_ENDPOINT}/restituzioni`,
+    payload,
+  );
+
+  return data;
+};
+
 export const rentalService = {
   getAll,
   getByCustomerId,
   getByDvdTitle,
   createRental,
   registerReturn,
+  registerReturns,
 };

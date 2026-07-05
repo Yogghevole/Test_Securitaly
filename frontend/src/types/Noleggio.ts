@@ -22,6 +22,11 @@ export interface CreateRentalPayload {
   restituzione_prevista: string;
 }
 
+export interface RegisterReturnsPayload {
+  noleggio_ids: number[];
+  data_restituzione: string;
+}
+
 export interface RentalFilters {
   cliente_id?: number;
   titolo_dvd?: string;

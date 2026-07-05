@@ -37,8 +37,8 @@ export const APP_NAVIGATION_ITEMS: AppNavigationItem[] = [
   },
   {
     path: ROUTES.STORICO_NOLEGGI,
-    label: 'Storico Noleggi',
-    title: 'Storico Noleggi',
+    label: 'Rental History',
+    title: 'Rental History',
     icon: <HistoryOutlined />,
   },
 ];

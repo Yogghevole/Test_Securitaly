@@ -3,7 +3,7 @@ import { MainLayout } from '@/layouts/MainLayout';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { CatalogoPage } from '@/pages/CatalogoPage';
 import { ClientiPage } from '@/pages/ClientiPage';
-import { StoricoNoleggiPage } from '@/pages/StoricoNoleggiPage';
+import { RentalHistoryPage } from '@/pages/RentalHistoryPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { ROUTES } from '@/constants/routes';
 
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.STORICO_NOLEGGI,
-        element: <StoricoNoleggiPage />,
+        element: <RentalHistoryPage />,
       },
     ],
   },

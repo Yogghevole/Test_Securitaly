@@ -5,4 +5,9 @@ export type {
   UpdateCustomerPayload,
 } from './Cliente';
 export type { Dvd } from './Dvd';
-export type { CreateRentalPayload, Noleggio, RentalFilters } from './Noleggio';
+export type {
+  CreateRentalPayload,
+  Noleggio,
+  RegisterReturnsPayload,
+  RentalFilters,
+} from './Noleggio';
