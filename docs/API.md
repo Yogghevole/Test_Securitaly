@@ -229,4 +229,5 @@ Endpoint aggregato: una singola chiamata per alimentare la dashboard.
 ## Note di implementazione
 
 - Alcune funzionalità (filtri UI, calcoli di stato/ritardo) sono gestite lato frontend per migliorare la reattività. Dove possibile, la logica “di dominio” rimane centralizzata nel backend.
-- La suite di test backend usa SQLite in-memory; il database applicativo usato a runtime resta MySQL.
+- La suite di test backend usa SQLite in-memory; il database applicativo usato a runtime usa SQLite file-based di default.
+- MySQL resta supportato come opzione alternativa di dimostrazione tramite configurazione `.env`.
