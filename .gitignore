@@ -19,7 +19,7 @@ frontend/.env.*.local
 frontend/*.tsbuildinfo
 
 # Local databases and caches
-backend/database/*.sqlite
+!backend/database/database.sqlite
 backend/database/*.sqlite-journal
 backend/database/*.sqlite-wal
 backend/database/*.sqlite-shm

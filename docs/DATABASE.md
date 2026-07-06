@@ -44,13 +44,14 @@
 
 ---
 
-## Motore Database (MySQL)
+## Motore Database
 
-Il progetto supporta **MySQL** tramite la configurazione Laravel standard.
+Il progetto usa **SQLite** come configurazione runtime predefinita tramite la configurazione Laravel standard.
 
 - La connessione usata dall’applicazione è determinata da `DB_CONNECTION` nel file `.env`.
-- Per sviluppo locale è comune usare MySQL (es. `DB_CONNECTION=mysql`).
-- Il file `backend/database/database.sqlite` non viene usato nel setup runtime corrente; per questo può risultare vuoto.
+- Il setup raccomandato del repository usa `DB_CONNECTION=sqlite`.
+- Il file `backend/database/database.sqlite` contiene il database locale dell'applicazione.
 - Durante i test automatici Laravel usa SQLite **in-memory**, quindi i dati della test suite non vengono salvati in quel file.
+- MySQL resta disponibile come configurazione alternativa solo per dimostrazione o validazione su RDBMS server-based.
 
 Nota: evitare di committare credenziali reali nel repository; usare placeholder o variabili d’ambiente locali.

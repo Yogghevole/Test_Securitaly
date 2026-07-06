@@ -24,7 +24,7 @@ L'obiettivo è mantenere un progetto pulito, modulare e facilmente manutenibile.
 
 - Laravel 13
 - PHP ^8.3
-- Database runtime: MySQL (configurabile via `.env`)
+- Database runtime: SQLite file-based (configurabile via `.env`)
 - Database test suite: SQLite in-memory (`phpunit.xml`)
 
 ---

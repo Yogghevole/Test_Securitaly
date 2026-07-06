@@ -23,7 +23,6 @@ Le seguenti estensioni devono essere abilitate:
 ```text
 pdo_sqlite
 sqlite3
-pdo_mysql
 ```
 
 ### Comando
@@ -56,7 +55,8 @@ npm run lint
 
 ## Note pratiche
 
-- Il database applicativo usato a runtime resta MySQL.
-- SQLite viene usato solo per rendere la test suite veloce e isolata.
+- Il database applicativo usato a runtime usa SQLite file-based.
+- SQLite in-memory viene usato per rendere la test suite veloce e isolata.
 - In ambiente Windows con PHP standalone, le estensioni SQLite si abilitano tipicamente nel `php.ini` del PHP CLI.
-- Il file `backend/database/database.sqlite` può restare vuoto: nel setup corrente non viene usato né dall'app a runtime né dai test, che lavorano su `:memory:`.
+- Il file `backend/database/database.sqlite` contiene il database locale dell'app; se è vuoto, basta rieseguire migration e seed.
+- MySQL è opzionale e resta utilizzabile solo come configurazione alternativa di dimostrazione.

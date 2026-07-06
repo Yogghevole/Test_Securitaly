@@ -19,7 +19,7 @@ Il sistema è pensato per offrire un’esperienza semplice e coerente su desktop
 | --- | --- |
 | Frontend | React, TypeScript, Vite, Ant Design, React Router, Axios, Dayjs |
 | Backend | Laravel 13, PHP 8.3+, Eloquent ORM, API REST |
-| Runtime DB | MySQL |
+| Runtime DB | SQLite |
 | Test DB | SQLite in-memory |
 
 ## Highlights
@@ -39,8 +39,7 @@ Il sistema è pensato per offrire un’esperienza semplice e coerente su desktop
 - Composer
 - Node.js
 - npm
-- MySQL
-- estensioni PHP `pdo_mysql`, `pdo_sqlite`, `sqlite3`
+- estensioni PHP `pdo_sqlite`, `sqlite3`
 
 ### Backend
 
@@ -51,20 +50,17 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Configura poi il file `.env` con i parametri del tuo MySQL locale:
+Il progetto è configurato di default per usare SQLite file-based, quindi non richiede un server database esterno.
 
 ```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=securitaly_dvd_rental
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_CONNECTION=sqlite
+DB_DATABASE=database/database.sqlite
 ```
 
 Esegui migrazioni e seed:
 
 ```bash
+php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
 php artisan migrate:fresh --seed
 php artisan serve
 ```
@@ -119,32 +115,37 @@ npm run lint
 
 ### Come vedere davvero i dati del progetto?
 
-Nel tuo caso, i dati reali stanno in **MySQL**, non in `database.sqlite`.
+Nel setup attuale, i dati reali stanno in:
+
+```text
+backend/database/database.sqlite
+```
 
 Puoi aprirli con uno strumento grafico come:
 
-- MySQL Workbench
+- DB Browser for SQLite
 - DBeaver
 - TablePlus
-- phpMyAdmin (se installato a parte)
 
-Parametri connessione:
+Se il file è vuoto, esegui prima:
 
-```text
-Host: 127.0.0.1
-Port: 3306
-Database: securitaly_dvd_rental
-User: quello configurato nel tuo .env
-Password: quella configurata nel tuo .env
+```bash
+cd backend
+php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+php artisan migrate:fresh --seed
 ```
 
-### Se vuoi usare davvero SQLite file-based
+### Opzione alternativa: MySQL solo per dimostrazione
 
-Devi cambiare il backend in questo modo:
+Se vuoi mostrare il progetto anche con MySQL, puoi cambiare il backend in questo modo:
 
 ```env
-DB_CONNECTION=sqlite
-DB_DATABASE=database/database.sqlite
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=securitaly_dvd_rental
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
 
 Poi eseguire:
@@ -154,7 +155,7 @@ cd backend
 php artisan migrate:fresh --seed
 ```
 
-Solo a quel punto vedrai tabelle e dati dentro `backend/database/database.sqlite`.
+MySQL resta quindi un’alternativa dimostrativa, mentre il percorso standard del repository è SQLite.
 
 ## Demo Data
 
@@ -177,13 +178,15 @@ Dopo `php artisan migrate:fresh --seed` troverai:
 - Workflow di noleggio multi-item in un’unica operazione
 - Workflow di restituzione sia singolo sia bulk
 - Interfaccia desktop-first coerente con un gestionale interno
+- SQLite come database runtime predefinito per semplificare setup, demo e revisione tecnica
+- MySQL mantenuto come opzione secondaria per dimostrazione di compatibilità
 
 ## Screenshots
 
 Le schermate del progetto sono disponibili nella cartella:
 
 ```text
-docs/SCREENSHOTS/
+docs/screenshots/
 ```
 
 Screenshot principali inclusi:
