@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Cliente;
+use Illuminate\Http\Request;
+
+class ClienteController extends Controller
+{
+    // Elenca tutti i clienti
+    public function index(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+
+        $clienti = Cliente::query()
+            ->withCount([
+                'noleggi as active_rentals' => function ($query) {
+                    $query->whereNull('restituzione_effettiva');
+                },
+            ])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($nestedQuery) use ($search) {
+                    $nestedQuery
+                        ->where('nome', 'like', '%' . $search . '%')
+                        ->orWhere('cognome', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('cognome')
+            ->orderBy('nome')
+            ->get();
+
+        return response()->json($clienti);
+    }
+
+    // Restituisce il dettaglio di un cliente con noleggi attivi e storico
+    public function show(int $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $activeRentals = $cliente
+            ->noleggi()
+            ->with(['cliente', 'dvd'])
+            ->whereNull('restituzione_effettiva')
+            ->orderByDesc('data_noleggio')
+            ->get()
+            ->append('is_attivo');
+
+        $rentalHistory = $cliente
+            ->noleggi()
+            ->with(['cliente', 'dvd'])
+            ->whereNotNull('restituzione_effettiva')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
+            ->get()
+            ->append('is_attivo');
+
+        return response()->json([
+            'cliente' => $cliente,
+            'active_rentals' => $activeRentals,
+            'rental_history' => $rentalHistory,
+        ]);
+    }
+
+    // Crea un nuovo cliente
+    public function store(Request $request)
+    {
+        // Validazione dei dati
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'cognome' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clienti,email',
+        ]);
+
+        // Crea il cliente
+        $cliente = Cliente::create($validated);
+
+        // Restituisce il cliente creato con codice 201 (Created)
+        return response()->json($cliente, 201);
+    }
+
+    // Aggiorna un cliente esistente
+    public function update(Request $request, int $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'cognome' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clienti,email,' . $cliente->id,
+        ]);
+
+        $cliente->update($validated);
+
+        return response()->json($cliente);
+    }
+}

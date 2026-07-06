@@ -1,0 +1,22 @@
+.stat-card {
+  padding: 16px 18px;
+  border: 1px solid rgba(5, 5, 5, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-card__value {
+  color: var(--stat-card-value-color, #1677ff);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-card__title {
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 1.45;
+}

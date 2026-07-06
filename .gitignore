@@ -1,0 +1,28 @@
+# Laravel
+backend/vendor/
+backend/node_modules/
+backend/public/storage
+backend/.env
+backend/.env.backup
+backend/.phpunit.result.cache
+backend Homestead.json
+backend Homestead.yaml
+backend/npm-debug.log
+backend/yarn-error.log
+
+# React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/*.tsbuildinfo
+
+# Local databases and caches
+backend/database/*.sqlite
+backend/database/*.sqlite-journal
+backend/database/*.sqlite-wal
+backend/database/*.sqlite-shm
+
+# Local tooling
+.trae/

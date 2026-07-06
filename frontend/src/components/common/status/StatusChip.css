@@ -1,0 +1,31 @@
+.status-chip.ant-tag {
+  margin-inline-end: 0;
+  font-weight: 600;
+  border-radius: 999px;
+  padding-inline: 10px;
+  line-height: 22px;
+}
+
+.status-chip--success.ant-tag {
+  color: #389e0d;
+  background: #f6ffed;
+  border-color: #b7eb8f;
+}
+
+.status-chip--warning.ant-tag {
+  color: #d48806;
+  background: #fffbe6;
+  border-color: #ffe58f;
+}
+
+.status-chip--danger.ant-tag {
+  color: #cf1322;
+  background: #fff1f0;
+  border-color: #ffa39e;
+}
+
+.status-chip--info.ant-tag {
+  color: #1677ff;
+  background: #e6f4ff;
+  border-color: #91caff;
+}
