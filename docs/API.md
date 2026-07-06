@@ -1,302 +1,232 @@
-# API Specification
-## DVD Rental Management System
+# API — DVD Rental Management System
 
-Versione: 1.0
+Questo documento descrive le API REST esposte dal backend Laravel e utilizzate dalla SPA React.
 
-Questo documento definisce le API utilizzate dal frontend React.
+## Convenzioni
 
-Il backend Laravel rappresenta la fonte di verità dell'applicazione.
+- **Base URL**: `/api`
+- **Formato**: `application/json`
+- **Date**: `YYYY-MM-DD` per i campi data (coerente con i tipi Laravel `date`)
 
-Il frontend non deve effettuare trasformazioni, filtri o ricerche che possono essere eseguite dal backend.
+## DVD
 
----
+### GET `/dvds`
 
-# Convenzioni
+Restituisce l’intero catalogo DVD. Ogni record include anche `copie_disponibili` calcolato lato backend.
 
-Base URL
+**Response (200)**
 
-/api
-
-Formato
-
-application/json
-
-Tutte le date vengono restituite in formato ISO.
-
----
-
-# DVD
-
-## GET /dvds
-
-Restituisce il catalogo dei DVD.
-
-Supporta filtri opzionali.
-
-Query Parameters
-
-search
-
-Ricerca nel titolo.
-
-categoria
-
-Filtra per categoria.
-
-available
-
-true | false
-
-Mostra solamente DVD disponibili.
-
-order
-
-title
-
-release_date
-
-category
-
-Response
-
+```json
 [
-    {
-        "id": 1,
-        "titolo": "Matrix",
-        "categoria": "Fantascienza",
-        "durata_minuti": 136,
-        "quantita": 3,
-        "copie_disponibili": 2,
-        "data_di_uscita": "1999-03-31"
-    }
+  {
+    "id": 1,
+    "titolo": "Matrix",
+    "categoria": "Fantascienza",
+    "durata_minuti": 136,
+    "quantita": 3,
+    "copie_disponibili": 2,
+    "data_di_uscita": "1999-03-31",
+    "cover_path": "/covers/matrix.jpg"
+  }
 ]
+```
 
----
+## Clienti
 
-## GET /dvds/{id}
+### GET `/clienti`
 
-Dettaglio singolo DVD.
+Elenco clienti. Supporta ricerca testuale.
 
-Utilizzato solamente quando necessario.
+**Query parameters**
+- `search`: ricerca su `nome`, `cognome`, `email`
 
----
+**Response (200)**
 
-# Clienti
-
-## GET /clienti
-
-Elenco clienti.
-
-Supporta:
-
-search
-
-Ricerca per:
-
-nome
-
-cognome
-
-email
-
-Response
-
+```json
 [
-    {
-        "id":1,
-        "nome":"Mario",
-        "cognome":"Rossi",
-        "email":"...",
-        "active_rentals":2
-    }
+  {
+    "id": 1,
+    "nome": "Mario",
+    "cognome": "Rossi",
+    "email": "mario.rossi@example.com",
+    "active_rentals": 2
+  }
 ]
+```
 
-active_rentals è calcolato dal backend.
+### GET `/clienti/{id}`
 
----
+Dettaglio cliente usato dal drawer (cliente + noleggi attivi + storico).
 
-## GET /clienti/{id}
+**Response (200)**
 
-Dettaglio completo cliente.
-
-Response
-
+```json
 {
-    "cliente":{
-
-    },
-
-    "active_rentals":[
-
-    ],
-
-    "rental_history":[
-
-    ]
+  "cliente": {},
+  "active_rentals": [],
+  "rental_history": []
 }
+```
 
-Questo endpoint alimenta il Drawer Cliente.
+### POST `/clienti`
 
----
+Crea un cliente.
 
-## POST /clienti
+**Body**
 
-Creazione cliente.
-
-Body
-
+```json
 {
-    "nome":"",
-    "cognome":"",
-    "email":""
+  "nome": "Mario",
+  "cognome": "Rossi",
+  "email": "mario.rossi@example.com"
 }
+```
 
----
+### PUT `/clienti/{id}`
 
-# Noleggi
+Aggiorna i dati anagrafici del cliente.
 
-## GET /noleggi
+**Body**
 
-Supporta filtri.
+```json
+{
+  "nome": "Mario",
+  "cognome": "Rossi",
+  "email": "mario.rossi@example.com"
+}
+```
 
-Query Parameters
+## Noleggi
 
-cliente_id
+### GET `/noleggi`
 
-dvd_id
+Elenco noleggi con relazioni `cliente` e `dvd`. Include anche `is_attivo` calcolato lato backend.
 
-status
+**Query parameters**
+- `cliente_id`: filtra per cliente
+- `titolo_dvd`: filtra per titolo DVD (parziale)
 
-search
+**Response (200)**
 
-date_from
-
-date_to
-
-Response
-
+```json
 [
-    {
-        "id":1,
-
-        "cliente":{},
-
-        "dvd":{},
-
-        "data_noleggio":"",
-
-        "restituzione_prevista":"",
-
-        "restituzione_effettiva":"",
-
-        "status":"OVERDUE",
-
-        "delay_days":4
-    }
+  {
+    "id": 1,
+    "cliente": {},
+    "dvd": {},
+    "data_noleggio": "2026-07-01",
+    "restituzione_prevista": "2026-07-08",
+    "restituzione_effettiva": null,
+    "is_attivo": true
+  }
 ]
+```
 
-Lo status viene calcolato dal backend.
+### POST `/noleggi`
 
-Delay viene calcolato dal backend.
+Crea uno o più noleggi. Il backend genera un record per ogni DVD richiesto (workflow multi-rental).
 
-Il frontend non deve eseguire questi calcoli.
+**Body (multi)**
 
----
-
-## POST /noleggi
-
-Creazione di uno o più noleggi.
-
-Body
-
+```json
 {
-    "cliente_id":1,
-
-    "dvd_ids":[
-        3,
-        5,
-        7
-    ],
-
-    "data_noleggio":"",
-
-    "restituzione_prevista":""
+  "cliente_id": 1,
+  "dvd_ids": [3, 5, 7],
+  "data_noleggio": "2026-07-01",
+  "restituzione_prevista": "2026-07-08"
 }
+```
 
-Il backend crea un record per ogni DVD.
+**Body (singolo)**
 
-Restituisce i noleggi creati.
-
----
-
-## PUT /noleggi/{id}/restituisci
-
-Registra una restituzione.
-
-Body
-
+```json
 {
-    "data_restituzione":""
+  "cliente_id": 1,
+  "dvd_id": 3,
+  "data_noleggio": "2026-07-01",
+  "restituzione_prevista": "2026-07-08"
 }
+```
 
-Il backend:
+**Response (201)**
 
-- aggiorna la data
-- calcola eventuale ritardo
-- restituisce il noleggio aggiornato
+```json
+[
+  {
+    "id": 10,
+    "cliente": {},
+    "dvd": {},
+    "data_noleggio": "2026-07-01",
+    "restituzione_prevista": "2026-07-08",
+    "restituzione_effettiva": null,
+    "is_attivo": true
+  }
+]
+```
 
----
+### PUT `/noleggi/{id}/restituisci`
 
-# Dashboard
+Registra la restituzione di un singolo noleggio. La data viene impostata automaticamente a **oggi** lato backend.
 
-## GET /dashboard
+**Response (200)**
 
-Restituisce esclusivamente dati operativi.
-
-Response
-
+```json
 {
-    "returns_today":3,
-
-    "late_returns":2,
-
-    "need_attention":5,
-
-    "recent_activity":[
-
-    ]
+  "id": 10,
+  "cliente": {},
+  "dvd": {},
+  "restituzione_effettiva": "2026-07-06",
+  "is_attivo": false
 }
+```
 
-La Dashboard effettua una sola chiamata HTTP.
+### POST `/noleggi/restituzioni`
 
----
+Registra una **restituzione multipla** (bulk) per più noleggi.
 
-# Filosofia
+**Body**
 
-Il backend è responsabile di:
+```json
+{
+  "noleggio_ids": [10, 11, 12],
+  "data_restituzione": "2026-07-06"
+}
+```
 
-✓ Filtri
+**Response (200)**
 
-✓ Ricerca
+```json
+[
+  {
+    "id": 10,
+    "restituzione_effettiva": "2026-07-06",
+    "is_attivo": false
+  }
+]
+```
 
-✓ Calcolo disponibilità
+## Dashboard
 
-✓ Stato noleggio
+### GET `/dashboard`
 
-✓ Giorni di ritardo
+Endpoint aggregato: una singola chiamata per alimentare la dashboard.
 
-✓ Noleggi attivi
+**Response (200)**
 
-✓ Ordinamenti
+```json
+{
+  "today_returns": [],
+  "need_attention": [
+    {
+      "customer": {},
+      "max_delay_days": 3,
+      "overdue_rentals_count": 2
+    }
+  ]
+}
+```
 
-Il frontend è responsabile solamente di:
+## Note di implementazione
 
-✓ Visualizzazione
-
-✓ Workflow
-
-✓ Gestione stato UI
-
-✓ Esperienza utente
-
-Il frontend non deve duplicare logica già presente nel backend.
+- Alcune funzionalità (filtri UI, calcoli di stato/ritardo) sono gestite lato frontend per migliorare la reattività. Dove possibile, la logica “di dominio” rimane centralizzata nel backend.
+- La suite di test backend usa SQLite in-memory; il database applicativo usato a runtime resta MySQL.

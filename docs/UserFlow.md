@@ -27,17 +27,11 @@ Dashboard
 │     │     └── Click
 │     │           └── Apre Storico Noleggi filtrato sulle restituzioni odierne
 │     │
-│     ├── Restituzioni in ritardo
-│     │     └── Click
-│     │           └── Apre Storico Noleggi filtrato sui ritardi
-│     │
-│     └── Noleggi che richiedono attenzione
-│           └── Mostra il numero totale
-│
-└── Timeline Attività Recenti
-      ├── Mario ha noleggiato Matrix
-      ├── Luca ha restituito Cars
-      └── Giulia ha noleggiato Avatar
+│     └── Clienti che richiedono attenzione
+│           ├── Mostra i clienti con almeno un noleggio in ritardo
+│           ├── Evidenzia il ritardo massimo (giorni)
+│           └── Click
+│                 └── Apre il drawer del cliente nella sezione Clienti
 
 --------------------------------------------------------------------------------------------------------------------------------------
 

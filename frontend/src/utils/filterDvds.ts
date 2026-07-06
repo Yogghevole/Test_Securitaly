@@ -8,9 +8,11 @@ export const filterDvds = (
   dvds: Dvd[],
   search: string,
   category: string,
+  availability: string,
 ): Dvd[] => {
   const normalizedSearch = normalizeValue(search);
   const normalizedCategory = normalizeValue(category);
+  const normalizedAvailability = normalizeValue(availability);
 
   return dvds.filter((dvd) => {
     const matchesSearch =
@@ -22,6 +24,12 @@ export const filterDvds = (
       normalizedCategory === 'all' ||
       normalizeValue(dvd.categoria) === normalizedCategory;
 
-    return matchesSearch && matchesCategory;
+    const matchesAvailability =
+      normalizedAvailability === '' ||
+      normalizedAvailability === 'all' ||
+      (normalizedAvailability === 'available' && dvd.copie_disponibili > 0) ||
+      (normalizedAvailability === 'sold-out' && dvd.copie_disponibili === 0);
+
+    return matchesSearch && matchesCategory && matchesAvailability;
   });
 };

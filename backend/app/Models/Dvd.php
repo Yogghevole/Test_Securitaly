@@ -9,6 +9,10 @@ class Dvd extends Model
 {
     protected $table = 'dvds';
 
+    protected $appends = [
+        'copie_disponibili',
+    ];
+
     protected $fillable = [
         'titolo',
         'data_di_uscita',
@@ -27,8 +31,9 @@ class Dvd extends Model
     // Accessor per calcolare le copie disponibili (quantita - noleggi attivi)
     public function getCopieDisponibiliAttribute()
     {
-        // Noleggi attivi = restituzione_effettiva IS NULL
-        $noleggiAttivi = $this->noleggi()->whereNull('restituzione_effettiva')->count();
+        $noleggiAttivi = $this->attributes['active_rentals_count']
+            ?? $this->noleggi()->whereNull('restituzione_effettiva')->count();
+
         return max(0, $this->quantita - $noleggiAttivi);
     }
 }

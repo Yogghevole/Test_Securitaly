@@ -95,7 +95,7 @@ export const RentalDetailDrawer = ({
             </div>
 
             <div className="rental-history-page__detail-item">
-              <Typography.Text type="secondary">Status</Typography.Text>
+              <Typography.Text type="secondary">Stato</Typography.Text>
               <Typography.Text>{getRentalStatus(rental).label}</Typography.Text>
             </div>
           </div>

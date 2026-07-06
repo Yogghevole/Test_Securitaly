@@ -385,7 +385,9 @@
 
 .layout-content {
   min-height: 0;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
   padding: 1.5rem;
   background: #f5f5f5;
 }

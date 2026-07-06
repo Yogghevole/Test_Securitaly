@@ -4,6 +4,7 @@ export type {
   CustomerDetailResponse,
   UpdateCustomerPayload,
 } from './Cliente';
+export type { DashboardNeedAttentionItem, DashboardResponse } from './Dashboard';
 export type { Dvd } from './Dvd';
 export type {
   CreateRentalPayload,

@@ -17,10 +17,18 @@ const STATUS_OPTIONS = [
 
 type StatusFilterValue = (typeof STATUS_OPTIONS)[number]['value'];
 
-export const useRentalHistory = () => {
+interface UseRentalHistoryParams {
+  initialStatusValue?: StatusFilterValue;
+}
+
+export const useRentalHistory = ({
+  initialStatusValue = 'all',
+}: UseRentalHistoryParams = {}) => {
   const [rentals, setRentals] = useState<Noleggio[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [statusValue, setStatusValue] = useState<StatusFilterValue>('all');
+  const [statusValue, setStatusValue] = useState<StatusFilterValue>(
+    initialStatusValue,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -43,11 +51,29 @@ export const useRentalHistory = () => {
   }, [refreshRentals]);
 
   const sortedRentals = useMemo(() => {
+    const getActivityTimestamp = (rental: Noleggio) => {
+      const updatedAt = dayjs(rental.updated_at);
+      if (updatedAt.isValid()) {
+        return updatedAt.valueOf();
+      }
+
+      const createdAt = dayjs(rental.created_at);
+      if (createdAt.isValid()) {
+        return createdAt.valueOf();
+      }
+
+      const rentalDate = dayjs(rental.data_noleggio);
+      return rentalDate.isValid() ? rentalDate.valueOf() : 0;
+    };
+
     return [...rentals].sort((left, right) => {
-      return (
-        dayjs(right.data_noleggio).valueOf() -
-        dayjs(left.data_noleggio).valueOf()
-      );
+      const diff = getActivityTimestamp(right) - getActivityTimestamp(left);
+
+      if (diff !== 0) {
+        return diff;
+      }
+
+      return right.id - left.id;
     });
   }, [rentals]);
 

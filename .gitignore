@@ -16,3 +16,13 @@ frontend/dist/
 frontend/.env
 frontend/.env.local
 frontend/.env.*.local
+frontend/*.tsbuildinfo
+
+# Local databases and caches
+backend/database/*.sqlite
+backend/database/*.sqlite-journal
+backend/database/*.sqlite-wal
+backend/database/*.sqlite-shm
+
+# Local tooling
+.trae/

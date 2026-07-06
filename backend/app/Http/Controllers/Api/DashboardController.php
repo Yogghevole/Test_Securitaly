@@ -3,66 +3,68 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 use App\Models\Noleggio;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $today = now()->toDateString();
+        $todayDate = now()->startOfDay();
 
-        $returnsToday = Noleggio::query()
+        $todayReturns = Noleggio::query()
+            ->with(['cliente', 'dvd'])
             ->whereNull('restituzione_effettiva')
             ->whereDate('restituzione_prevista', $today)
-            ->count();
+            ->orderBy('restituzione_prevista')
+            ->get()
+            ->sortBy(fn (Noleggio $rental) => sprintf(
+                '%s|%s|%s',
+                strtolower($rental->dvd?->titolo ?? ''),
+                strtolower($rental->cliente?->cognome ?? ''),
+                strtolower($rental->cliente?->nome ?? '')
+            ))
+            ->values()
+            ->each->append('is_attivo');
 
-        $lateReturns = Noleggio::query()
+        $overdueRentals = Noleggio::query()
+            ->with(['cliente'])
             ->whereNull('restituzione_effettiva')
             ->whereDate('restituzione_prevista', '<', $today)
-            ->count();
-
-        $recentRentals = Noleggio::query()
-            ->with(['cliente', 'dvd'])
-            ->orderByDesc('created_at')
-            ->limit(5)
             ->get()
-            ->map(function (Noleggio $noleggio) {
-                $noleggio->append('is_attivo');
+            ->each->append('is_attivo');
+
+        $needAttention = $overdueRentals
+            ->groupBy('cliente_id')
+            ->map(function ($rentals) use ($todayDate) {
+                /** @var Noleggio $firstRental */
+                $firstRental = $rentals->first();
+                /** @var Cliente|null $customer */
+                $customer = $firstRental?->cliente;
+
+                if (!$customer) {
+                    return null;
+                }
 
                 return [
-                    'type' => 'rental',
-                    'date' => $noleggio->created_at,
-                    'rental' => $noleggio,
+                    'customer' => $customer,
+                    'max_delay_days' => $rentals->max(
+                        fn (Noleggio $rental) => Carbon::parse($rental->restituzione_prevista)
+                            ->startOfDay()
+                            ->diffInDays($todayDate)
+                    ),
+                    'overdue_rentals_count' => $rentals->count(),
                 ];
-            });
-
-        $recentReturns = Noleggio::query()
-            ->with(['cliente', 'dvd'])
-            ->whereNotNull('restituzione_effettiva')
-            ->orderByDesc('restituzione_effettiva')
-            ->limit(5)
-            ->get()
-            ->map(function (Noleggio $noleggio) {
-                $noleggio->append('is_attivo');
-
-                return [
-                    'type' => 'return',
-                    'date' => $noleggio->restituzione_effettiva,
-                    'rental' => $noleggio,
-                ];
-            });
-
-        $recentActivity = $recentRentals
-            ->concat($recentReturns)
-            ->sortByDesc('date')
-            ->values()
-            ->take(10);
+            })
+            ->filter()
+            ->sortByDesc('max_delay_days')
+            ->values();
 
         return response()->json([
-            'returns_today' => $returnsToday,
-            'late_returns' => $lateReturns,
-            'need_attention' => $returnsToday + $lateReturns,
-            'recent_activity' => $recentActivity,
+            'today_returns' => $todayReturns,
+            'need_attention' => $needAttention,
         ]);
     }
 }

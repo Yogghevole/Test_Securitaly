@@ -12,6 +12,7 @@ interface CatalogToolbarProps {
   availabilityValue: string;
   categoryOptions: FilterOption[];
   categoryValue: string;
+  onAvailabilityChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onSearchChange: (value: string) => void;
   searchValue: string;
@@ -22,6 +23,7 @@ export const CatalogToolbar = ({
   availabilityValue,
   categoryOptions,
   categoryValue,
+  onAvailabilityChange,
   onCategoryChange,
   onSearchChange,
   searchValue,
@@ -50,7 +52,7 @@ export const CatalogToolbar = ({
 
         <Select
           className="catalog-toolbar__availability"
-          disabled
+          onChange={onAvailabilityChange}
           options={availabilityOptions}
           size="large"
           value={availabilityValue}

@@ -41,7 +41,7 @@ export const ReturnModeBanner = ({
       }
       className="rental-history-page__return-banner"
       description="Seleziona il cliente per visualizzare i DVD attualmente noleggiati."
-      message="Return Mode"
+      message="Modalità rientro"
       showIcon
       type="info"
     />

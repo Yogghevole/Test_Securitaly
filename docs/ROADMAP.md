@@ -1,174 +1,101 @@
-# ROADMAP - DVD Rental Management System
+# ROADMAP — DVD Rental Management System
+
+Roadmap sintetica e aggiornata allo stato attuale del repository. L’obiettivo è mantenere una checklist utile e credibile, non una lista “ideale”.
 
 ## Fase 1: Setup Ambiente ✅
-- [x] Verifica prerequisiti
-- [x] Inizializza repository Git
-- [x] Crea struttura del progetto
-- [x] Configura backend Laravel
-- [x] Configura frontend React + TypeScript
-- [x] Installa dipendenze principali
-- [x] Configura documentazione iniziale
-  - [x] README
-  - [x] ROADMAP
-  - [x] DEVLOG
+- [x] Struttura repository
+- [x] Backend Laravel inizializzato
+- [x] Frontend React + TypeScript (Vite) inizializzato
+- [x] Documentazione base
 
 ---
 
 ## Fase 2: Backend Laravel ✅
-- [x] Progettazione database
-- [x] Creazione migrazioni
-- [x] Creazione modelli
-- [x] Definizione relazioni
-- [x] Seeder dati di test
-- [x] Controller REST
-- [x] Request Validation
-- [x] Configurazione CORS
-- [x] Test API
+- [x] Migrazioni e modelli (`clienti`, `dvds`, `noleggi`)
+- [x] Controller API (catalogo, clienti, noleggi, dashboard)
+- [x] Validazione input su operazioni critiche (noleggi e restituzioni)
+- [x] Seeder completi per dati demo coerenti
 
 ---
 
-## Fase 3: Bootstrap Frontend
-- [ ] Pulizia template Vite
-- [ ] Configurazione React Router
-- [ ] Configurazione Axios
-- [ ] Configurazione Ant Design
-- [ ] Creazione MainLayout
-- [ ] Configurazione routing applicazione
-- [ ] Placeholder delle pagine
-- [ ] Verifica compilazione progetto
+## Fase 3: Bootstrap Frontend ✅
+- [x] Pulizia template Vite
+- [x] Router applicazione
+- [x] Service layer (Axios) + types
+- [x] Layout principale (sidebar/header/content)
 
 ---
 
-## Fase 4: Design System
-- [ ] Sidebar
-- [ ] Header
-- [ ] Breadcrumb
-- [ ] Content Layout
-- [ ] Tema Ant Design
-- [ ] Stili globali
-- [ ] Sidebar Expand / Collapse
-- [ ] Verifica responsive del layout
+## Fase 4: Design System ✅
+- [x] Sidebar (expand/collapse)
+- [x] Header e wrapper pagina
+- [x] Stili globali + layout desktop-first
+- [x] Componenti UI coerenti (tabelle, empty state, search)
 
 ---
 
-## Fase 5: API Layer
-- [ ] Configurazione Service Layer
-- [ ] movie.service
-- [ ] customer.service
-- [ ] rental.service
-- [ ] Hook personalizzati
-  - [ ] useMovies
-  - [ ] useCustomers
-  - [ ] useRentals
-  - [ ] useDebounce
-- [ ] Test comunicazione con Laravel
+## Fase 5: API Layer ✅
+- [x] `dvd.service.ts`
+- [x] `customer.service.ts`
+- [x] `rental.service.ts` (multi-rental + bulk returns)
+- [x] `dashboard.service.ts` (endpoint aggregato)
+- [x] Hook per feature (`useDashboard`, `useRentalHistory`, `useReturnWorkflow`, ecc.)
 
 ---
 
-## Fase 6: Componenti Condivisi
-- [ ] SearchInput
-- [ ] StatusTag
-- [ ] FilterBar
-- [ ] Loading
-- [ ] EmptyState
-- [ ] ConfirmDialog
-- [ ] TableToolbar
-- [ ] Componenti riutilizzabili
+## Fase 6: Componenti Condivisi ✅
+- [x] Media components (`DvdCover`, `MediaListItem`)
+- [x] UI components (`StatusChip`, `StatCard`, `AppTable`, `SearchBar`, `EmptyState`)
+- [x] Pattern “Service → Hook → UI” applicato alle pagine
 
 ---
 
-## Fase 7: Dashboard
-- [ ] Header Dashboard
-- [ ] Card operative
-  - [ ] Restituzioni previste oggi
-  - [ ] Restituzioni in ritardo
-  - [ ] Noleggi da attenzionare
-- [ ] Timeline attività recenti
-- [ ] Collegamento dati backend
+## Fase 7: Catalogo DVD ✅
+- [x] Ricerca e filtri
+- [x] Indicatori disponibilità
+- [x] Workflow noleggio (rental mode, carrello, drawer, conferma)
 
 ---
 
-## Fase 8: Catalogo DVD
-
-### Modalità Consultazione
-- [ ] Barra ricerca
-- [ ] Filtri
-- [ ] Tabella DVD
-- [ ] Disponibilità
-
-### Modalità Noleggio
-- [ ] Banner Rental Mode
-- [ ] Selezione multipla DVD
-- [ ] Rental Cart
-- [ ] Drawer Nuovo Noleggio
-- [ ] Collegamento API
-- [ ] Gestione noleggio multiplo
+## Fase 8: Clienti ✅
+- [x] Ricerca + tabella
+- [x] Drawer dettagli (noleggi attivi + storico)
+- [x] Creazione e modifica cliente
+- [x] Deep-link da dashboard (apertura drawer via query param)
 
 ---
 
-## Fase 9: Clienti
-- [ ] Barra ricerca
-- [ ] Tabella Clienti
-- [ ] Drawer Cliente
-- [ ] Drawer Nuovo Cliente
-- [ ] Collegamento API
+## Fase 9: Storico Noleggi ✅
+- [x] Ricerca e filtri stato
+- [x] Calcolo stato/ritardo in UI
+- [x] Workflow restituzione (return mode, carrello, drawer, conferma)
+- [x] Restituzione multipla (bulk)
 
 ---
 
-## Fase 10: Storico Noleggi
-
-### Modalità Consultazione
-- [ ] Ricerca
-- [ ] Filtri
-- [ ] Tabella Noleggi
-- [ ] Stati
-- [ ] Colori restituzione
-
-### Modalità Restituzione
-- [ ] Banner Return Mode
-- [ ] Ricerca Cliente
-- [ ] Selezione multipla DVD
-- [ ] Return Cart
-- [ ] Drawer Restituzione
-- [ ] Alert ritardi
-- [ ] Gestione restituzione multipla
+## Fase 10: Dashboard ✅
+- [x] Rientri previsti oggi
+- [x] Clienti che richiedono attenzione (ritardi)
+- [x] Navigazione diretta alle pagine correlate (storico/clienti)
 
 ---
 
 ## Fase 11: Responsive & Polish
-- [ ] Desktop
+- [x] Desktop
 - [ ] Tablet
 - [ ] Mobile
-- [ ] Ottimizzazione Drawer
-- [ ] Ottimizzazione Tabelle
-- [ ] Rifiniture UX
-
----
-
-## Fase 12: Refactoring
-- [ ] Pulizia componenti
-- [ ] Riduzione duplicazioni
-- [ ] Ottimizzazione hook
-- [ ] Pulizia servizi
-- [ ] Miglioramento struttura
+- [ ] Rifiniture UX (micro-interazioni, spaziature, accessibilità)
 
 ---
 
 ## Fase 13: Testing
-- [ ] Test completo dei flussi
-- [ ] Test API
-- [ ] Gestione errori
-- [ ] Loading State
-- [ ] Empty State
-- [ ] Verifica TypeScript
-- [ ] Verifica ESLint
+- [x] Test feature dei workflow principali (noleggio/restituzione)
+- [x] Test API mirati (disponibilità DVD, transazioni, bulk returns)
 
 ---
 
 ## Fase 14: Documentazione
-- [ ] Aggiornamento README
-- [ ] Aggiornamento DEVLOG
-- [ ] Aggiornamento ARCHITECTURE
-- [ ] Aggiornamento USER FLOWS
-- [ ] Screenshot applicazione
-- [ ] Revisione finale documentazione
+- [x] README
+- [x] Documentazione tecnica (API/Architettura/DB/User Flow)
+- [x] Screenshot applicazione
+- [x] Revisione finale e allineamento continuo docs ↔ codice

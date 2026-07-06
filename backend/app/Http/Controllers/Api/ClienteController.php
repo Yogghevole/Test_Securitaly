@@ -51,7 +51,8 @@ class ClienteController extends Controller
             ->noleggi()
             ->with(['cliente', 'dvd'])
             ->whereNotNull('restituzione_effettiva')
-            ->orderByDesc('data_noleggio')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
             ->get()
             ->append('is_attivo');
 

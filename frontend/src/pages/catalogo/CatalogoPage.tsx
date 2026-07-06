@@ -41,6 +41,12 @@ const getCategoryValue = (value: string | null) => {
     : 'all';
 };
 
+const getAvailabilityValue = (value: string | null) => {
+  return AVAILABILITY_OPTIONS.some((option) => option.value === value)
+    ? (value ?? 'all')
+    : 'all';
+};
+
 export const CatalogoPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [dvds, setDvds] = useState<Dvd[]>([]);
@@ -49,6 +55,7 @@ export const CatalogoPage = () => {
 
   const searchValue = searchParams.get('search') ?? '';
   const categoryValue = getCategoryValue(searchParams.get('category'));
+  const availabilityValue = getAvailabilityValue(searchParams.get('availability'));
 
   const reloadCatalog = useCallback(async () => {
     setIsLoading(true);
@@ -120,7 +127,11 @@ export const CatalogoPage = () => {
     };
   }, []);
 
-  const updateSearchParams = (nextSearch: string, nextCategory: string) => {
+  const updateSearchParams = (
+    nextSearch: string,
+    nextCategory: string,
+    nextAvailability: string,
+  ) => {
     const nextParams = new URLSearchParams();
     const normalizedSearch = nextSearch.trim();
 
@@ -132,20 +143,28 @@ export const CatalogoPage = () => {
       nextParams.set('category', nextCategory);
     }
 
+    if (nextAvailability !== 'all') {
+      nextParams.set('availability', nextAvailability);
+    }
+
     setSearchParams(nextParams, { replace: true });
   };
 
   const handleSearchChange = (value: string) => {
-    updateSearchParams(value, categoryValue);
+    updateSearchParams(value, categoryValue, availabilityValue);
   };
 
   const handleCategoryChange = (value: string) => {
-    updateSearchParams(searchValue, value);
+    updateSearchParams(searchValue, value, availabilityValue);
+  };
+
+  const handleAvailabilityChange = (value: string) => {
+    updateSearchParams(searchValue, categoryValue, value);
   };
 
   const filteredDvds = useMemo(() => {
-    return filterDvds(dvds, searchValue, categoryValue);
-  }, [categoryValue, dvds, searchValue]);
+    return filterDvds(dvds, searchValue, categoryValue, availabilityValue);
+  }, [availabilityValue, categoryValue, dvds, searchValue]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -227,9 +246,10 @@ export const CatalogoPage = () => {
           <div className="catalogo-page__surface">
             <CatalogToolbar
               availabilityOptions={AVAILABILITY_OPTIONS}
-              availabilityValue="all"
+              availabilityValue={availabilityValue}
               categoryOptions={CATEGORY_OPTIONS}
               categoryValue={categoryValue}
+              onAvailabilityChange={handleAvailabilityChange}
               onCategoryChange={handleCategoryChange}
               onSearchChange={handleSearchChange}
               searchValue={searchValue}

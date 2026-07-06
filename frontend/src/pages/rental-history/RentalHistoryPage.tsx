@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ChangeEvent } from 'react';
 import { Button, Divider } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import { AppPageHeader, PageContainer } from '@/components/common';
 import {
   ReturnCart,
@@ -16,7 +17,12 @@ import { useRentalHistory } from './hooks/useRentalHistory';
 import { useReturnWorkflow } from './hooks/useReturnWorkflow';
 import './RentalHistoryPage.css';
 
+const getInitialStatusValue = (value: string | null) => {
+  return value === 'returns_today' ? 'returns_today' : 'all';
+};
+
 export const RentalHistoryPage = () => {
+  const [searchParams] = useSearchParams();
   const [selectedRental, setSelectedRental] = useState<Noleggio | null>(null);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
   const {
@@ -30,7 +36,9 @@ export const RentalHistoryPage = () => {
     statusOptions,
     statusValue,
     setStatusValue,
-  } = useRentalHistory();
+  } = useRentalHistory({
+    initialStatusValue: getInitialStatusValue(searchParams.get('status')),
+  });
   const {
     activeCustomerRentals,
     handleCancelReturnMode,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export type CustomerDrawerMode = 'create' | 'detail' | 'edit';
 
@@ -9,31 +9,31 @@ export const useCustomerDrawer = () => {
     null,
   );
 
-  const openCreateDrawer = () => {
+  const openCreateDrawer = useCallback(() => {
     setSelectedCustomerId(null);
     setMode('create');
     setIsOpen(true);
-  };
+  }, []);
 
-  const openDetailDrawer = (customerId: number) => {
+  const openDetailDrawer = useCallback((customerId: number) => {
     setSelectedCustomerId(customerId);
     setMode('detail');
     setIsOpen(true);
-  };
+  }, []);
 
-  const startEditMode = () => {
+  const startEditMode = useCallback(() => {
     setMode('edit');
-  };
+  }, []);
 
-  const completeEditMode = () => {
+  const completeEditMode = useCallback(() => {
     setMode('detail');
-  };
+  }, []);
 
-  const closeDrawer = () => {
+  const closeDrawer = useCallback(() => {
     setIsOpen(false);
     setMode('create');
     setSelectedCustomerId(null);
-  };
+  }, []);
 
   return {
     closeDrawer,

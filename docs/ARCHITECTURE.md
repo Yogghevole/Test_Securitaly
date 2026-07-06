@@ -23,8 +23,9 @@ L'obiettivo è mantenere un progetto pulito, modulare e facilmente manutenibile.
 ## Backend
 
 - Laravel 13
-- PHP 8.5+
-- MySQL 8
+- PHP ^8.3
+- Database runtime: MySQL (configurabile via `.env`)
+- Database test suite: SQLite in-memory (`phpunit.xml`)
 
 ---
 
@@ -64,17 +65,14 @@ src/
 ├── assets/
 │
 ├── components/
-│   ├── catalog/
 │   ├── common/
-│   ├── customers/
-│   ├── dashboard/
+│   ├── form/
 │   ├── layout/
-│   └── rentals/
+│   ├── rentals/
+│   └── table/
 │
 ├── config/
 ├── constants/
-├── hooks/
-├── layouts/
 ├── lib/
 ├── pages/
 ├── router/
@@ -93,16 +91,31 @@ src/
 
 ```text
 pages/
+dashboard/
+  DashboardPage.tsx
+  components/
+  hooks/
 
-Dashboard.tsx
+catalogo/
+  CatalogoPage.tsx
+  components/
+  hooks/
 
-Catalog.tsx
+customers/
+  CustomersPage.tsx
+  components/
+  hooks/
 
-Customers.tsx
+rental-history/
+  RentalHistoryPage.tsx
+  components/
+  hooks/
 
-RentalHistory.tsx
-
-NotFound.tsx
+DashboardPage.tsx        (re-export)
+CatalogoPage.tsx         (re-export)
+ClientiPage.tsx          (re-export)
+RentalHistoryPage.tsx    (re-export)
+NotFoundPage.tsx
 ```
 
 Ogni pagina rappresenta una funzionalità principale dell'applicazione.
@@ -166,19 +179,19 @@ Con una transizione fade di circa 300ms.
 
 Dashboard
 
-/catalog
+/catalogo
 
 ↓
 
 DVD Catalog
 
-/customers
+/clienti
 
 ↓
 
 Customers
 
-/rentals
+/storico-noleggi
 
 ↓
 
@@ -198,14 +211,43 @@ constants/routes.ts
 I Services comunicano con Laravel.
 
 ```text
-movie.service.ts
-
+dvd.service.ts
 customer.service.ts
-
 rental.service.ts
+dashboard.service.ts
 ```
 
 I componenti non effettuano mai chiamate HTTP direttamente.
+
+---
+
+# Testing
+
+## Backend
+
+La suite backend usa `RefreshDatabase` con configurazione di test su SQLite in-memory.
+
+Prerequisiti minimi nel PHP CLI:
+
+```text
+pdo_sqlite
+sqlite3
+```
+
+Comando:
+
+```bash
+php artisan test
+```
+
+## Frontend
+
+Verifiche consigliate prima della consegna:
+
+```bash
+npm run build
+npm run lint
+```
 
 ---
 
@@ -214,13 +256,10 @@ I componenti non effettuano mai chiamate HTTP direttamente.
 I Custom Hook gestiscono la logica di comunicazione con i Services.
 
 ```text
-useMovies()
-
-useCustomers()
-
-useRentals()
-
-useDebounce()
+useDashboard()
+useCustomerDrawer()
+useRentalHistory()
+useReturnWorkflow()
 ```
 
 ---
@@ -230,13 +269,11 @@ useDebounce()
 Funzioni riutilizzabili.
 
 ```text
-date.ts
-
-delay.ts
-
-status.ts
-
-availability.ts
+filterDvds.ts
+formatDuration.ts
+getAvailabilityStatus.ts
+getCoverUrl.ts
+components/rentals/rentalStatus.ts
 ```
 
 ---
@@ -244,14 +281,13 @@ availability.ts
 # Types
 
 ```text
-movie.ts
-
-customer.ts
-
-rental.ts
+Dvd.ts
+Cliente.ts
+Noleggio.ts
+Dashboard.ts
 ```
 
-Ogni file contiene una sola interfaccia.
+I types sono raggruppati per dominio. È consentito includere più interfacce nello stesso file quando sono strettamente correlate (es. payload + filtri della stessa feature).
 
 ---
 
@@ -421,16 +457,15 @@ Terminata l'operazione, l'interfaccia torna automaticamente in Browse Mode.
 
 ## Dashboard
 
-- AttentionCard
-- ActivityTimeline
+- DashboardTodayReturns
+- DashboardNeedAttention
 
 ---
 
 ## Catalog
 
-- MovieTable
-- MovieFilters
-- RentalBanner
+- CatalogTable
+- CatalogToolbar
 - RentalCart
 - RentalDrawer
 
@@ -446,17 +481,18 @@ Terminata l'operazione, l'interfaccia torna automaticamente in Browse Mode.
 
 ## Rental History
 
-- RentalTable
-- ReturnBanner
+- RentalHistoryTable
+- RentalHistoryToolbar
+- ReturnModeBanner
 - ReturnCart
 - ReturnDrawer
-- DelayTag
+- RentalDetailDrawer
 
 ---
 
 # Comunicazione con il Backend
 
-Il backend espone tre moduli.
+Il backend espone quattro moduli principali.
 
 ## Clienti
 
@@ -477,133 +513,12 @@ Il backend espone tre moduli.
 - creazione
 - restituzione
 
-Il frontend implementa il noleggio multiplo effettuando automaticamente più chiamate consecutive al backend, mantenendo un'esperienza utente unificata.
+Il noleggio multiplo avviene con una singola `POST /noleggi` che invia `dvd_ids`: il backend crea più record in transazione e restituisce l’elenco dei noleggi creati.
 
-Lo stesso approccio viene utilizzato per la restituzione multipla.
-
----
-
-# Roadmap
-
-## Fase 1
-
-Bootstrap
-
-- Router
-- Axios
-- Layout base
+La restituzione multipla avviene tramite `POST /noleggi/restituzioni` (bulk), mentre la restituzione singola usa `PUT /noleggi/{id}/restituisci`.
 
 ---
 
-## Fase 2
+## Dashboard
 
-Design System
-
-- Sidebar
-- Header
-- Layout definitivo
-
----
-
-## Fase 3
-
-API Layer
-
-- Services
-- Hooks
-
----
-
-## Fase 4
-
-Componenti comuni
-
----
-
-## Fase 5
-
-Dashboard
-
----
-
-## Fase 6
-
-DVD Catalog
-
-### 6.1 Browse Mode
-
-### 6.2 Rental Mode
-
-### 6.3 Rental Cart
-
-### 6.4 Rental Drawer
-
----
-
-## Fase 7
-
-Customers
-
-### 7.1 Table
-
-### 7.2 Drawer
-
-### 7.3 Form
-
----
-
-## Fase 8
-
-Rental History
-
-### 8.1 Browse Mode
-
-### 8.2 Return Mode
-
-### 8.3 Return Cart
-
-### 8.4 Return Drawer
-
-### 8.5 Delay Status
-
----
-
-## Fase 9
-
-Responsive
-
----
-
-## Fase 10
-
-Refactoring
-
----
-
-## Fase 11
-
-Testing
-
----
-
-## Fase 12
-
-Documentazione
-
----
-
-# Obiettivi del Progetto
-
-Il progetto deve dare l'impressione di essere stato sviluppato da un piccolo team professionale.
-
-Ogni scelta progettuale deve privilegiare:
-
-- semplicità
-- coerenza
-- leggibilità
-- manutenibilità
-- esperienza utente
-
-piuttosto che complessità o astrazioni inutili.
-
-L'obiettivo finale è ottenere un'applicazione enterprise pulita, coerente e facilmente estendibile.
+- endpoint aggregato `GET /dashboard` per alimentare la home operativa con una sola chiamata.

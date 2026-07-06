@@ -4,10 +4,7 @@ Dashboard
 │
 ├── Card Operative
 │     ├── Restituzioni previste oggi
-│     ├── Restituzioni in ritardo
-│     └── Noleggi da attenzionare
-│
-└── Timeline attività recenti
+│     └── Clienti che richiedono attenzione
 
 ----------------------------------------------------------------------------------------------------------------------
 

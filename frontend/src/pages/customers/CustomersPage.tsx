@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ChangeEvent } from 'react';
 import { Button, Divider, Form, message } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import {
   AppPageHeader,
   EmptyState,
@@ -16,6 +17,7 @@ import { useCustomerDrawer } from './hooks/useCustomerDrawer';
 import './CustomersPage.css';
 
 export const CustomersPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [customers, setCustomers] = useState<Cliente[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -68,6 +70,25 @@ export const CustomersPage = () => {
     void Promise.resolve().then(loadCustomers);
   }, [loadCustomers]);
 
+  const customerIdParam = searchParams.get('customerId');
+
+  useEffect(() => {
+    if (!customerIdParam) {
+      return;
+    }
+
+    const customerId = Number(customerIdParam);
+
+    if (!Number.isInteger(customerId) || customerId <= 0) {
+      return;
+    }
+
+    void Promise.resolve().then(() => {
+      openDetailDrawer(customerId);
+      return loadCustomerDetail(customerId);
+    });
+  }, [customerIdParam, loadCustomerDetail, openDetailDrawer]);
+
   const filteredCustomers = useMemo(() => {
     const normalizedSearch = searchValue.trim().toLowerCase();
 
@@ -90,17 +111,26 @@ export const CustomersPage = () => {
   };
 
   const handleOpenCreateDrawer = () => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('customerId');
+    setSearchParams(nextParams, { replace: true });
     form.resetFields();
     setDetail(null);
     openCreateDrawer();
   };
 
   const handleOpenDetailDrawer = (customerId: number) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('customerId', String(customerId));
+    setSearchParams(nextParams, { replace: true });
     openDetailDrawer(customerId);
     void loadCustomerDetail(customerId);
   };
 
   const handleCloseDrawer = () => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('customerId');
+    setSearchParams(nextParams, { replace: true });
     form.resetFields();
     setDetail(null);
     closeDrawer();
