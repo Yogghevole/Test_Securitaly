@@ -6,7 +6,6 @@ Il progetto simula un piccolo gestionale interno con flussi completi di catalogo
 ## Overview
 
 Il sistema è pensato per offrire un’esperienza semplice e coerente su desktop, con particolare attenzione a:
-
 - consultazione veloce del catalogo DVD
 - gestione clienti con dettaglio e storico
 - workflow di noleggio multi-item
@@ -31,163 +30,180 @@ Il sistema è pensato per offrire un’esperienza semplice e coerente su desktop
 - Test feature backend sui flussi core
 - Documentazione tecnica dedicata in `docs/`
 
-## Quick Start
+---
 
-### Prerequisiti
+## Quick Start & Setup Locale
 
-- PHP 8.3+
-- Composer
-- Node.js
-- npm
-- estensioni PHP `pdo_sqlite`, `sqlite3`
+Questa guida assume l'installazione in un ambiente locale pulito. Segui i passaggi in ordine cronologico per evitare conflitti o crash di comunicazione tra frontend e backend.
 
-### Backend
+### 1. Prerequisiti Hardware & Software
+- **Node.js** (v18+) & **npm** -> [Scarica qui](https://nodejs.org/)
+- **PHP 8.3+** -> [Scarica qui](https://www.php.net/downloads.php) *(Nota: su Windows scaricare la versione "Zip" x64 Thread Safe)*
+- **Composer** -> [Scarica qui](https://getcomposer.org/) *(Richiede PHP già installato sul sistema)*
+
+> 💡 **Consiglio PRO per la revisione rapida:** Se riscontri problemi con la configurazione manuale di PHP e SQLite su Windows o Mac, ti consigliamo caldamente di usare **Laravel Herd** ([herd.laravel.com](https://herd.laravel.com/)). Configura PHP, Composer e SQLite in un click in modo isolato, senza toccare i file di sistema.
+
+#### 🔧 Come configurare manualmente PHP e attivare le estensioni
+Se usi un'installazione PHP nativa/manuale e riscontri errori di driver mancanti (es. `could not find driver` o problemi con `ZipDownloader`), segui questa procedura:
+
+1. Vai nella cartella d'installazione di PHP (es. `C:\php-8.x.x\`).
+2. Se non è presente il file `php.ini` puro, individua il file **`php.ini-development`**, copialo e nominalo esattamente **`php.ini`**.
+3. Apri il file `php.ini` con un editor di testo e assicurati di decommentare (rimuovendo il punto e virgola `;` a inizio riga) le seguenti direttive ed estensioni:
+   ```ini
+   # Specifica la cartella delle estensioni (FONDAMENTALE su Windows)
+   extension_dir = "ext"
+
+   # Estensioni richieste da Laravel e dal sistema SQLite
+   extension=curl
+   extension=fileinfo
+   extension=mbstring
+   extension=openssl
+   extension=pdo_sqlite
+   extension=sqlite3
+   extension=zip
+   ```
+4. Salva il file e verifica la corretta attivazione da terminale digitando `php -m` (le voci sopracitate dovranno apparire nella lista dei moduli caricati).
+
+---
+
+### 2. Configurazione Backend
+
+Apri il terminale (se usi Windows e riscontri blocchi di esecuzione script su PowerShell, digita prima `cmd` per passare al prompt dei comandi classico) ed entra nella cartella `backend`:
 
 ```bash
 cd backend
+
+# 1. Installa le dipendenze PHP
 composer install
-cp .env.example .env
+
+# 2. Configura le variabili d'ambiente di Laravel
+copy .env.example .env   # Su Mac/Linux: cp .env.example .env
 php artisan key:generate
 ```
 
-Il progetto è configurato di default per usare SQLite file-based, quindi non richiede un server database esterno.
-
+Il progetto è preconfigurato per utilizzare SQLite file-based per scopi di review tecnica:
 ```env
 DB_CONNECTION=sqlite
 DB_DATABASE=database/database.sqlite
 ```
 
-Esegui migrazioni e seed:
-
+#### Inizializzazione e Popolamento del Database:
 ```bash
-php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+# 3. Crea fisicamente il file vuoto per SQLite (Windows)
+type nul > database\database.sqlite
+# Nota per Mac/Linux: usa il comando "touch database/database.sqlite"
+
+# 4. Esegui le migrazioni e avvia i seed demo
 php artisan migrate:fresh --seed
+
+# 5. Avvia il server delle API locali
 php artisan serve
 ```
+*Il backend sarà in ascolto su: `http://127.0.0.1:8000`. Lascia questo terminale aperto.*
 
-Backend disponibile su:
+---
 
-```text
-http://127.0.0.1:8000
-```
+### 3. Configurazione Frontend
 
-### Frontend
+Apri un **secondo terminale** dedicato (mantenendo il backend attivo) e posizionati nella cartella `frontend`:
 
 ```bash
 cd frontend
+
+# 1. Installa i pacchetti Node
 npm install
+```
+
+#### ⚠️ Configurazione Variabili d'Ambiente Frontend (.env)
+Per evitare che React vada in crash cercando di risolvere le chiamate API sulla stessa porta del Dev Server (`5173`), è obbligatorio definire l'URL di destinazione del backend.
+
+1. Crea un file chiamato **`.env`** (oppure `.env.local`) all'interno della cartella `frontend/`.
+2. Inserisci la seguente variabile di configurazione:
+   ```env
+   VITE_API_URL=[http://127.0.0.1:8000/api](http://127.0.0.1:8000/api)
+   ```
+
+#### Avvio dell'Applicazione:
+```bash
 npm run dev
 ```
+*Nota: Se la policy di esecuzione di PowerShell blocca l'avvio, digita `cmd` all'interno del terminale per bypassare le restrizioni di Windows prima di lanciare il comando.*
 
-Frontend disponibile su:
-
+L'applicazione sarà accessibile nel browser all'indirizzo:
 ```text
-http://127.0.0.1:5173
+[http://127.0.0.1:5173](http://127.0.0.1:5173)
 ```
+
+---
 
 ## Test e verifiche
 
 ### Backend
-
-La suite backend usa **SQLite in-memory** tramite `phpunit.xml`.
-
+La suite dei test backend si appoggia su un database **SQLite in-memory** configurato all'interno del file `phpunit.xml`.
 ```bash
 cd backend
 php artisan test
 ```
 
-Se ricevi errori come `could not find driver`, abilita nel tuo `php.ini` CLI:
-
-```ini
-extension=pdo_sqlite
-extension=sqlite3
-```
-
 ### Frontend
-
 ```bash
 cd frontend
 npm run build
 npm run lint
 ```
 
+---
+
 ## Database
 
-### Come vedere davvero i dati del progetto?
-
-Nel setup attuale, i dati reali stanno in:
-
+### Esplorazione visiva dei dati di runtime
+I dati applicativi generati e modificati durante le sessioni di utilizzo vengono registrati nel file:
 ```text
 backend/database/database.sqlite
 ```
+È possibile ispezionare le tabelle e le relazioni con un qualsiasi client grafico per database come:
+- **DB Browser for SQLite** (Consigliato)
+- **DBeaver**
+- **TablePlus**
 
-Puoi aprirli con uno strumento grafico come:
-
-- DB Browser for SQLite
-- DBeaver
-- TablePlus
-
-Se il file è vuoto, esegui prima:
-
+Se riscontri un database vuoto o desideri resettare lo stato iniziale dei dati demo, esegui:
 ```bash
 cd backend
-php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
 php artisan migrate:fresh --seed
 ```
 
-### Opzione alternativa: MySQL solo per dimostrazione
-
-Se vuoi mostrare il progetto anche con MySQL, puoi cambiare il backend in questo modo:
-
+### Opzione alternativa: MySQL
+Se desideri valutare il comportamento del backend accoppiato a un DBMS relazionale tradicional, modifica il file `backend/.env` configurando le tue credenziali locali:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=securitaly_dvd_rental
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_USERNAME=tuo_username
+DB_PASSWORD=tua_password
 ```
+Rilancia poi il comando di migrazione (`php artisan migrate:fresh --seed`) per ricostruire lo schema su MySQL.
 
-Poi eseguire:
-
-```bash
-cd backend
-php artisan migrate:fresh --seed
-```
-
-MySQL resta quindi un’alternativa dimostrativa, mentre il percorso standard del repository è SQLite.
+---
 
 ## Demo Data
 
-Il progetto include seed completi per avere un ambiente realistico appena avviato.
+I seed inclusi generano istantaneamente uno scenario operativo reale per permettere una valutazione immediata delle feature senza inserimenti manuali preventivi. Il set dati include:
+- Catalogo completo di film catalogati per genere con disponibilità stock variabile
+- Anagrafiche clienti con stati differenziati (attivi, con ritardi o sospesi)
+- Storico transazionale con contratti di noleggio attivi, conclusi, scadenze fissate per la data corrente ed eventi di over-due (utili per saggiare i widget della dashboard)
 
-Dopo `php artisan migrate:fresh --seed` troverai:
-
-- catalogo DVD già popolato
-- clienti demo
-- noleggi attivi
-- noleggi conclusi
-- rientri previsti oggi
-- clienti con ritardi utili per la dashboard
+---
 
 ## Scelte progettuali
 
-- Pattern architetturale **Service -> Hook -> UI**
-- Frontend feature-based per mantenere il codice leggibile e scalabile
-- Dashboard basata su endpoint aggregato `/dashboard`
-- Workflow di noleggio multi-item in un’unica operazione
-- Workflow di restituzione sia singolo sia bulk
-- Interfaccia desktop-first coerente con un gestionale interno
-- SQLite come database runtime predefinito per semplificare setup, demo e revisione tecnica
-- MySQL mantenuto come opzione secondaria per dimostrazione di compatibilità
+- **Pattern Service -> Hook -> UI:** Disaccoppiamento netto della logica di fetching e manipolazione dati dal livello di presentazione (UI React).
+- **Feature-Based Architecture:** Cartelle organizzate per macro-funzionalità per massimizzare la leggibilità del codice e la manutenibilità futura.
+- **Endpoint Dashboard Aggregato:** Ottimizzazione delle performance di caricamento tramite la creazione di un controller backend dedicato capace di restituire metriche e KPI strutturati in una singola richiesta HTTP.
+- **Transazioni Multi-Item:** Implementazione di un workflow di noleggio e restituzione flessibile capace di gestire operazioni singole e bulk all'interno dello stesso ciclo di esecuzione.
+- **SQLite nativo di default:** Scelta mirata a facilitare i processi di code review tecnica ed eliminare l'overhead sistemistico in fase di colloquio.
 
-## Screenshots
-
-Le schermate del progetto sono disponibili nella cartella:
-
-```text
-docs/screenshots/
-```
+---
 
 Screenshot principali inclusi:
 
@@ -201,6 +217,8 @@ Screenshot principali inclusi:
 - `storico.PNG`
 - `storico-rientro.PNG`
 - `storico-rientro-carrello.PNG`
+
+---
 
 ## Documentazione tecnica
 
